@@ -1,44 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import data from "./data/data"
-import Popup from "./components/Popup"
-import Question from "./components/Question"
-import Answers from "./components/Answers"
-import NextButton from "./components/NextButton"
-import Footer from "./components/Footer"
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import data from "./data/data";
+import Popup from "./components/Popup";
+import Question from "./components/Question";
+import Answers from "./components/Answers";
+import NextButton from "./components/NextButton";
+import Footer from "./components/Footer";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      quizStarted: false,
-      displayPopup: true,
-      displayNextButton: false,
-      currentDataIndex: 0,
-      data,
-      answeredCorrect: 0
+function App() {
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [displayPopup, setDisplayPopup] = useState(true);
+  const [displayNextButton, setDisplayNextButton] = useState(false);
+  const [currentDataIndex, setCurrentDataIndex] = useState(0);
+  const [dataset, setDataset] = useState(data);
+  const [answeredCorrect, setAnsweredCorrect] = useState(0);
+
+  const handlePopupChange = () => {
+    if (!quizStarted) {
+      setQuizStarted(true);
+      setDisplayPopup(!displayPopup);
+    } else {
+      window.location.reload(); // restart the application
     }
+  };
 
-    this.handlePopupChange = this.handlePopupChange.bind(this);
-    this.handleAnswerClick = this.handleAnswerClick.bind(this);
-    this.handleNextButtonClick = this.handleNextButtonClick.bind(this);
-  }
-
-  handlePopupChange() {
-
-    if (!this.state.quizStarted) {
-      this.setState({ 
-        quizStarted: true,
-        displayPopup: !this.state.displayPopup
-       });
-    }
-    else {
-      window.location.reload();// restart the application
-    }
-  }
-
-  handleAnswerClick(e) {
+  const handleAnswerClick = (e) => {
     // Checks if answer is already chosen
     const rightClass = document.querySelector(".right");
     const wrongClass = document.querySelector(".wrong");
@@ -49,79 +36,65 @@ class App extends React.Component {
     // handles answer clicked
     const item = e.target.closest("li");
     const value = item.value;
-    const data = this.state.data;
-    const currentDataIndex = this.state.currentDataIndex;
-    const correctAnswer = data[currentDataIndex].answerUsingIndex;
+    const correctAnswer = dataset[currentDataIndex].answerUsingIndex;
 
-    if (correctAnswer === value) { 
+    if (correctAnswer === value) {
       item.classList.add("right");
-      this.setState({
-        displayNextButton: !this.state.displayNextButton,
-        answeredCorrect: this.state.answeredCorrect + 1,
-      });
-    }
-    else { 
-      item.classList.add("wrong");
-      this.setState({
-        displayNextButton: !this.state.displayNextButton,
-      });
-    }
-}
 
-  handleNextButtonClick() {
+      setDisplayNextButton(!displayNextButton);
+      setAnsweredCorrect(answeredCorrect + 1);
+    } else {
+      item.classList.add("wrong");
+
+      setDisplayNextButton(!displayNextButton);
+    }
+  };
+
+  const handleNextButtonClick = () => {
     // removes class of the element with one of these classes
     const rightClass = document.querySelector(".right");
     const wrongClass = document.querySelector(".wrong");
-    rightClass ? rightClass.classList.remove("right") : wrongClass.classList.remove("wrong")
+    rightClass
+      ? rightClass.classList.remove("right")
+      : wrongClass.classList.remove("wrong");
 
     // handles next button click
-    const dataIndexLength = this.state.data.length - 1;
-    const currentDataIndex = this.state.currentDataIndex;
+    const dataIndexLength = dataset.length - 1;
 
     if (dataIndexLength === currentDataIndex) {
-      this.setState({
-        displayPopup: !this.state.displayPopup,
-      })
-    } 
-    else {
-      this.setState({
-        displayNextButton: !this.state.displayNextButton,
-        currentDataIndex: this.state.currentDataIndex + 1
-      })
+      setDisplayPopup(!displayPopup);
+    } else {
+      setDisplayNextButton(!displayNextButton);
+      setCurrentDataIndex(currentDataIndex + 1);
     }
-  }
+  };
 
-  render() {
-    return (
-      <div className="app">
-        <div className="container">
-          <Popup 
-          quizStarted={this.state.quizStarted} 
-          handlePopupChange={this.handlePopupChange} 
-          displayPopup={this.state.displayPopup} 
-          dataset={this.state.data} 
-          answeredCorrect={this.state.answeredCorrect}
-          />
-          <Question 
-          dataset={this.state.data} 
-          currentDataIndex={this.state.currentDataIndex} 
-          />
-          <Answers 
-          dataset={this.state.data} 
-          currentDataIndex={this.state.currentDataIndex} 
-          handleAnswerClick={this.handleAnswerClick}
-          />
-          <NextButton
-          displayNextButton={this.state.displayNextButton}
-          handleNextButtonClick={this.handleNextButtonClick}
-          dataset={this.state.data}
-          currentDataIndex={this.state.currentDataIndex}
-          />
-          <Footer />
-        </div>
+  return (
+    <div className="app">
+      <div className="container">
+        <Popup
+          quizStarted={quizStarted}
+          handlePopupChange={handlePopupChange}
+          displayPopup={displayPopup}
+          dataset={dataset}
+          answeredCorrect={answeredCorrect}
+        />
+        <Question dataset={dataset} currentDataIndex={currentDataIndex} />
+        <Answers
+          dataset={dataset}
+          currentDataIndex={currentDataIndex}
+          handleAnswerClick={handleAnswerClick}
+        />
+        <NextButton
+          displayNextButton={displayNextButton}
+          handleNextButtonClick={handleNextButtonClick}
+          dataset={dataset}
+          currentDataIndex={currentDataIndex}
+        />
+        <Footer />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-ReactDOM.render( <App />, document.getElementById('root') );
+ReactDOM.render(<App />, document.getElementById("root"));

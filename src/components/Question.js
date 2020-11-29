@@ -1,8 +1,6 @@
 import React from "react";
 
-function Question(props) {
-  const { dataset, currentDataIndex } = props;
-
+function Question({ dataset, currentDataIndex }) {
   return (
     <div className="question">
       <h2>

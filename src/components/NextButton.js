@@ -1,13 +1,11 @@
 import React from "react";
 
-function NextButton(props) {
-  const {
-    displayNextButton,
-    handleNextButtonClick,
-    dataset,
-    currentDataIndex,
-  } = props;
-
+function NextButton({
+  displayNextButton,
+  handleNextButtonClick,
+  dataset,
+  currentDataIndex,
+}) {
   const displaying = displayNextButton
     ? { display: "flex" }
     : { display: "none" };

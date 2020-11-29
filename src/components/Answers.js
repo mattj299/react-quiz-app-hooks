@@ -1,7 +1,5 @@
 import React from "react";
-function Answers(props) {
-  const { dataset, currentDataIndex, handleAnswerClick } = props;
-
+function Answers({ dataset, currentDataIndex, handleAnswerClick }) {
   return (
     <div className="answers clearfix">
       <ul>

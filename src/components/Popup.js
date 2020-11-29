@@ -1,14 +1,12 @@
 import React from "react";
 
-function Popup(props) {
-  const {
-    quizStarted,
-    handlePopupChange,
-    displayPopup,
-    dataset,
-    answeredCorrect,
-  } = props;
-
+function Popup({
+  quizStarted,
+  handlePopupChange,
+  displayPopup,
+  dataset,
+  answeredCorrect,
+}) {
   const displaying = displayPopup ? { display: "flex" } : { display: "none" };
 
   if (quizStarted) {
